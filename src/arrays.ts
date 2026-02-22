@@ -47,7 +47,15 @@ export function stringsToIntegers(numbers: string[]): number[] {
  */
 // Remember, you can write functions as lambdas too! They work exactly the same.
 export const removeDollars = (amounts: string[]): number[] => {
-    return [];
+    const ans: number[] = amounts.map(
+        (x: string): number => {
+            if (x[0] === '$') x = x.replace("$", "");
+            const res: number = Number(x);
+            if (Number.isNaN(res)) return 0;
+            return res;
+        }
+    )
+    return ans;
 };
 
 /**
@@ -56,7 +64,14 @@ export const removeDollars = (amounts: string[]): number[] => {
  * in question marks ("?").
  */
 export const shoutIfExclaiming = (messages: string[]): string[] => {
-    return [];
+    return messages.filter(
+        (x: string): boolean => !x.endsWith('?')
+    ).map(
+        (x: string): string => {
+            if (x.endsWith('!')) x = x.toUpperCase();
+            return x; 
+        }
+    )
 };
 
 /**
@@ -64,7 +79,7 @@ export const shoutIfExclaiming = (messages: string[]): string[] => {
  * 4 letters long.
  */
 export function countShortWords(words: string[]): number {
-    return 0;
+    return words.filter((x: string): boolean => x.length < 4).length;
 }
 
 /**
@@ -73,7 +88,7 @@ export function countShortWords(words: string[]): number {
  * then return true.
  */
 export function allRGB(colors: string[]): boolean {
-    return false;
+    return colors.every((x: string): boolean => ["red", "green", "blue"].includes(x))
 }
 
 /**
@@ -84,7 +99,9 @@ export function allRGB(colors: string[]): boolean {
  * And the array [] would become "0=0".
  */
 export function makeMath(addends: number[]): string {
-    return "";
+    return addends.reduce((total: number, x: number) : number => total + x, 0).toString()
+    + "="
+    + (addends.length > 0 ? addends.join("+") : "0");
 }
 
 /**
@@ -95,7 +112,14 @@ export function makeMath(addends: number[]): string {
  *
  * For instance, the array [1, 9, -5, 7] would become [1, 9, -5, 10, 7]
  * And the array [1, 9, 7] would become [1, 9, 7, 17]
- */
+ */ 
 export function injectPositive(values: number[]): number[] {
-    return [];
+    const negIndex: number  = values.findIndex((x: number): boolean => x < 0);
+    const preNegSum = (sumIndex: number): number => values.slice(0, sumIndex).reduce((sum: number, x:number):number => sum + x, 0); 
+
+    if (negIndex === -1) { // there is no negative value
+        return [...values, preNegSum(values.length)];
+    }
+
+    return [...values.slice(0, negIndex + 1), preNegSum(negIndex), ...values.slice(negIndex + 1, values.length)];
 }
